@@ -2,7 +2,7 @@
 
 namespace App\Services\Helper;
 
-class ExtractorNumbersFromString
+final class ExtractorNumbersFromString
 {
     public function extract(string $string): array
     {

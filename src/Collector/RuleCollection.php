@@ -2,7 +2,7 @@
 
 namespace App\Collector;
 
-class RuleCollection
+final class RuleCollection
 {
     private iterable $rules;
 

@@ -45,8 +45,7 @@ class GenerateRandomCharacters extends Command
         $io = new SymfonyStyle($input, $output);
         $countSets = $input->getArgument('count-number');
 
-
-        if($countSets < 5 || $countSets > 1000) {
+        if ($countSets < 5 || $countSets > 1000) {
             throw new InvalidArgumentException("Please input value beetwen 5 and 1000");
         }
 

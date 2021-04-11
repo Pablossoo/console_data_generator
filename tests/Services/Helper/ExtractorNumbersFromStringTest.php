@@ -16,7 +16,7 @@ class ExtractorNumbersFromStringTest extends WebTestCase
 
         $result = $extractor->extract($string);
         $this->assertIsArray($result);
-        $this->assertEqualsCanonicalizing($expected,$result);
+        $this->assertEqualsCanonicalizing($expected, $result);
     }
 
     public function provider(): array

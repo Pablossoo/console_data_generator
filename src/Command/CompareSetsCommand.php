@@ -51,6 +51,12 @@ class CompareSetsCommand extends Command
         foreach ($finder as $element) {
             $contents[] = unserialize($element->getContents());
         }
+
+        $resultCompare['testDataA']['testDataA'] = 'dane zestawu A';
+        $resultCompare['testDataSetA']['testDataSetA'] = implode(',', $contents[0]);
+        $resultCompare['testDataB']['testData'] = 'dane zestawu B';
+        $resultCompare['testDataSetB']['testDataSetB'] = implode(',', $contents[1]);
+
         foreach ($contents[0] as $set) {
             foreach ($this->ruleCollection->getRules() as $key => $rule) {
                 $resultCompare[$key][$rule->getName()] = $rule->getName();
@@ -60,10 +66,10 @@ class CompareSetsCommand extends Command
 
         $csvFactory = $this->factory->createFile(FileExtension::CSV);
 
-        if(!$this->fileSystem->exists('Export')){
+        if (!$this->fileSystem->exists('Export')) {
             $this->fileSystem->mkdir(__DIR__.'../../Export/');
         }
-        $csvFactory->saveToFile(__DIR__.'/../Export/result.csv',$resultCompare);
+        $csvFactory->saveToFile(__DIR__.'/../Export/result.csv', $resultCompare);
 
         return Command::SUCCESS;
     }

@@ -25,7 +25,6 @@ class GenerateRandomStringTest extends TestCase
         $this->assertIsArray($result);
         $this->assertCount(10, $result);
         $this->assertRegExp('/[a-zA-Z0-9]/', $result[0]);
-
     }
 
     public function testReturnSetsName()

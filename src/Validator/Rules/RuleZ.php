@@ -2,7 +2,7 @@
 
 namespace App\Validator\Rules;
 
-class RuleZ implements ComparatorInterface
+final class RuleZ implements ComparatorInterface
 {
     public function compare(int $valueA, string $valueB): int
     {

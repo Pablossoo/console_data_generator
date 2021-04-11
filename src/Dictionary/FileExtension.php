@@ -2,7 +2,7 @@
 
 namespace App\Dictionary;
 
-class FileExtension
+final class FileExtension
 {
     public const CSV = 'csv';
     public const JSON = 'json';

@@ -2,7 +2,7 @@
 
 namespace App\Services\Helper\FileSupport;
 
-class Csv implements FileInterface
+final class Csv implements FileInterface
 {
     public function saveToFile(string $fileName, array $data)
     {

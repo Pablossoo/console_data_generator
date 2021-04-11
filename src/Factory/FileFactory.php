@@ -8,7 +8,7 @@ use App\Services\Helper\FileSupport\FileInterface;
 use App\Services\Helper\FileSupport\Json;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
-class FileFactory
+final class FileFactory
 {
     public function createFile(string $fileExtension): FileInterface
     {

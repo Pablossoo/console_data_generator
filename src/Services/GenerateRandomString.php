@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Symfony\Component\String\ByteString;
 
-class GenerateRandomString implements GenerateRandomCharactersInterface
+final class GenerateRandomString implements GenerateRandomCharactersInterface
 {
     private const MIN_LENGTH = 2;
     private const MAX_LENGTH = 100;

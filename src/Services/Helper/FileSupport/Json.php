@@ -2,7 +2,7 @@
 
 namespace App\Services\Helper\FileSupport;
 
-class Json implements FileInterface
+final class Json implements FileInterface
 {
     public function saveToFile(string $fileName, array $data)
     {

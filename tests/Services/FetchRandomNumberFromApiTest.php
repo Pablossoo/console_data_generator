@@ -10,7 +10,6 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 
 class FetchRandomNumberFromApiTest extends TestCase
 {
-
     public function testFetchDataFromApi()
     {
         $loggerInterfaceLogg = $this->createMock(LoggerInterface::class);

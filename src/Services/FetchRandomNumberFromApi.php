@@ -33,7 +33,6 @@ final class FetchRandomNumberFromApi implements GenerateRandomCharactersInterfac
             $generateNumbers = $this->fetchDataFromApi($params);
         }
 
-
         return $generateNumbers;
     }
     public function getSetName(): string
@@ -41,11 +40,11 @@ final class FetchRandomNumberFromApi implements GenerateRandomCharactersInterfac
         return 'setA';
     }
 
-
     private function fetchDataAboveTheMaximumLimitAPI(array $params): array
     {
         $numbers = [];
         $countCallingApi = (int)($params['count'] / 100);
+
         for ($i = 0; $i <= $countCallingApi; $i++) {
             if ($i === $countCallingApi) {
                 $params['count'] = $params['count'] % 100;
@@ -61,7 +60,7 @@ final class FetchRandomNumberFromApi implements GenerateRandomCharactersInterfac
         return $this->executeRequest($params);
     }
 
-    private function executeRequest(array $params): array
+    private function executeRequest(array $params)
     {
         try {
             $response = $this->client->request(
@@ -69,7 +68,9 @@ final class FetchRandomNumberFromApi implements GenerateRandomCharactersInterfac
                 sprintf('http://www.randomnumberapi.com/api/v1.0/random?%s', http_build_query($params))
             );
             $statusCode = $response->getStatusCode();
+
             if ($statusCode === 200) {
+                ;
                 return $response->toArray();
             }
         } catch (\Throwable $e) {

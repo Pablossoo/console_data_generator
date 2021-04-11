@@ -4,7 +4,7 @@ namespace App\Validator\Rules;
 
 use App\Services\Helper\ExtractorNumbersFromString;
 
-class RuleY implements ComparatorInterface
+final class RuleY implements ComparatorInterface
 {
     private ExtractorNumbersFromString $extractorNumbersFromString;
 
