@@ -14,7 +14,6 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-
 class CompareSetsCommand extends Command
 {
     protected static $defaultName = 'compare-sets';
@@ -44,49 +43,74 @@ class CompareSetsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $finder = new Finder();
-        $files = $finder->files()->in(__DIR__ . '../../../var/tmp/');
 
-        if ($files->hasResults() && $finder->count() !== 2) {
+        $filesToCompare = $this->findAllFilesWithDataToCompare();
+
+        if ($filesToCompare->hasResults() && $filesToCompare->count() !== 2) {
             throw new FileNotFoundException("Please first use command php bin/console generate:random-characters");
         }
 
-        foreach ($finder as $element) {
-            $contents[] = unserialize($element->getContents());
-        }
-
-        $resultCompare = $this->prepareHeadersWithDataInCsv([], $contents);
-
+        $contents = $this->loadDataToCompareFromFile($filesToCompare);
+        $resultCompare = $this->prepareHeadersWithDataInCsv($contents);
         $contentsArray = current($contents);
 
         if (empty($contentsArray)) {
             $io->error('Something went wrong');
             return Command::FAILURE;
         }
-        foreach ($contentsArray as $key => $item) {
-            foreach ($this->ruleCollection->getRules() as $key1 => $rule) {
-                $resultCompare[$key1][$rule->getName()] = $rule->getName();
-                $resultCompare[$rule->getName()][] = $rule->compare((int)$item, $contents[1][$key]);
-            }
-        }
 
+        $resultCompare = $this->buildArrayWithComparedValuesToSaveCsv($resultCompare, $contentsArray, $contents);
+        $this->saveToFile($resultCompare);
+
+        $io->success('Success!');
+        return Command::SUCCESS;
+    }
+
+    private function prepareHeadersWithDataInCsv(array $dataFromFile): array
+    {
+        $resultCompare = [];
+        $resultCompare['testDataA']['testDataA'] = 'dane zestawu A';
+        $resultCompare['testDataSetA']['testDataSetA'] = implode(',', $dataFromFile[0]);
+        $resultCompare['testDataB']['testData'] = 'dane zestawu B';
+        $resultCompare['testDataSetB']['testDataSetB'] = implode(',', $dataFromFile[1]);
+
+        return $resultCompare;
+    }
+
+    private function saveToFile(array $resultCompare)
+    {
         $csvFactory = $this->factory->createFile(FileExtension::CSV);
 
         if (!$this->fileSystem->exists('Export')) {
             $this->fileSystem->mkdir(__DIR__ . '../../Export/');
         }
         $csvFactory->saveToFile(__DIR__ . '/../Export/result.csv', $resultCompare);
-
-        $io->success('Success!');
-        return Command::SUCCESS;
     }
 
-    private function prepareHeadersWithDataInCsv(array $resultCompare, array $dataFromFile): array
+    private function loadDataToCompareFromFile(iterable $finder): array
     {
-        $resultCompare['testDataA']['testDataA'] = 'dane zestawu A';
-        $resultCompare['testDataSetA']['testDataSetA'] = implode(',', $dataFromFile[0]);
-        $resultCompare['testDataB']['testData'] = 'dane zestawu B';
-        $resultCompare['testDataSetB']['testDataSetB'] = implode(',', $dataFromFile[1]);
+        $contents = [];
+        foreach ($finder as $element) {
+            $contents[] = unserialize($element->getContents());
+        }
+
+        return $contents;
+    }
+
+    private function findAllFilesWithDataToCompare(): Finder
+    {
+        $finder = new Finder();
+        return $finder->files()->in(__DIR__ . '../../../var/tmp/');
+    }
+
+    private function buildArrayWithComparedValuesToSaveCsv(array $resultCompare, array $contentsArray, array $contents): array
+    {
+        foreach ($contentsArray as $key => $item) {
+            foreach ($this->ruleCollection->getRules() as $key1 => $rule) {
+                $resultCompare[$key1][$rule->getName()] = $rule->getName();
+                $resultCompare[$rule->getName()][] = $rule->compare((int)$item, $contents[1][$key]);
+            }
+        }
 
         return $resultCompare;
     }
