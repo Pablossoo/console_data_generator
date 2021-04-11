@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\VarDumper\VarDumper;
 
 class CompareSetsCommand extends Command
 {
@@ -52,25 +53,36 @@ class CompareSetsCommand extends Command
             $contents[] = unserialize($element->getContents());
         }
 
-        $resultCompare['testDataA']['testDataA'] = 'dane zestawu A';
-        $resultCompare['testDataSetA']['testDataSetA'] = implode(',', $contents[0]);
-        $resultCompare['testDataB']['testData'] = 'dane zestawu B';
-        $resultCompare['testDataSetB']['testDataSetB'] = implode(',', $contents[1]);
+        $resultCompare = $this->prepareHeadersWithDataInCsv([], $contents);
 
-        foreach ($contents[0] as $set) {
-            foreach ($this->ruleCollection->getRules() as $key => $rule) {
-                $resultCompare[$key][$rule->getName()] = $rule->getName();
-                $resultCompare[$rule->getName()][] = $rule->compare($set, $contents[1][$key]);
+        $contentsArray = current($contents);
+
+        foreach ($contentsArray as $key => $item) {
+            foreach ($this->ruleCollection->getRules() as $key1 => $rule) {
+                $resultCompare[$key1][$rule->getName()] = $rule->getName();
+                $resultCompare[$rule->getName()][] = $rule->compare((int)$item, $contents[1][$key]);
             }
         }
+
+
 
         $csvFactory = $this->factory->createFile(FileExtension::CSV);
 
         if (!$this->fileSystem->exists('Export')) {
-            $this->fileSystem->mkdir(__DIR__.'../../Export/');
+            $this->fileSystem->mkdir(__DIR__ . '../../Export/');
         }
-        $csvFactory->saveToFile(__DIR__.'/../Export/result.csv', $resultCompare);
+        $csvFactory->saveToFile(__DIR__ . '/../Export/result.csv', $resultCompare);
 
         return Command::SUCCESS;
+    }
+
+    private function prepareHeadersWithDataInCsv(array $resultCompare, array $dataFromFile): array
+    {
+        $resultCompare['testDataA']['testDataA'] = 'dane zestawu A';
+        $resultCompare['testDataSetA']['testDataSetA'] = implode(',', $dataFromFile[0]);
+        $resultCompare['testDataB']['testData'] = 'dane zestawu B';
+        $resultCompare['testDataSetB']['testDataSetB'] = implode(',', $dataFromFile[1]);
+
+        return $resultCompare;
     }
 }
