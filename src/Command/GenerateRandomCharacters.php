@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\Collector\GeneratorCollection;
-use App\Dictionary\FileExtension;
 use App\Factory\FileFactory;
 use App\Services\GenerateRandomCharactersInterface;
 use Symfony\Component\Console\Command\Command;
@@ -12,8 +11,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpClient\Exception\InvalidArgumentException;
 
 class GenerateRandomCharacters extends Command
 {
@@ -46,6 +45,10 @@ class GenerateRandomCharacters extends Command
         $io = new SymfonyStyle($input, $output);
         $countSets = $input->getArgument('count-number');
 
+
+        if($countSets < 5 || $countSets > 1000) {
+            throw new InvalidArgumentException("Please input value beetwen 5 and 1000");
+        }
 
         if ($this->fileSystem->exists(GenerateRandomCharacters::PATH_TMP)
             && $this->fileSystem->exists([GenerateRandomCharacters::PATH_TMP.'SetA.txt',GenerateRandomCharacters::PATH_TMP.'SetB.txt'])) {
