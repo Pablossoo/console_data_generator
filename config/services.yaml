@@ -31,8 +31,8 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
-    App\Collector\GeneratorCollector:
+    App\Collector\GeneratorCollection:
         arguments: [!tagged 'app.generator' ]
 
-    App\Validator\Rules\RuleCollection:
+    App\Collector\RuleCollection:
         arguments: [!tagged 'app.comparator' ]
