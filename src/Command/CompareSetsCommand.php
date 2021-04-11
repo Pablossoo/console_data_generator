@@ -9,10 +9,11 @@ use App\Validator\Rules\ComparatorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\VarDumper\VarDumper;
+
 
 class CompareSetsCommand extends Command
 {
@@ -42,6 +43,7 @@ class CompareSetsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
         $finder = new Finder();
         $files = $finder->files()->in(__DIR__ . '../../../var/tmp/');
 
@@ -57,14 +59,16 @@ class CompareSetsCommand extends Command
 
         $contentsArray = current($contents);
 
+        if (empty($contentsArray)) {
+            $io->error('Something went wrong');
+            return Command::FAILURE;
+        }
         foreach ($contentsArray as $key => $item) {
             foreach ($this->ruleCollection->getRules() as $key1 => $rule) {
                 $resultCompare[$key1][$rule->getName()] = $rule->getName();
                 $resultCompare[$rule->getName()][] = $rule->compare((int)$item, $contents[1][$key]);
             }
         }
-
-
 
         $csvFactory = $this->factory->createFile(FileExtension::CSV);
 
@@ -73,6 +77,7 @@ class CompareSetsCommand extends Command
         }
         $csvFactory->saveToFile(__DIR__ . '/../Export/result.csv', $resultCompare);
 
+        $io->success('Success!');
         return Command::SUCCESS;
     }
 
