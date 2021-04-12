@@ -46,7 +46,7 @@ class CompareSetsCommand extends Command
 
         $filesToCompare = $this->findAllFilesWithDataToCompare();
 
-        if ($filesToCompare->hasResults() && $filesToCompare->count() !== 2) {
+        if ($filesToCompare == null || ($filesToCompare->hasResults() && $filesToCompare->count() !== 2)) {
             throw new FileNotFoundException("Please first use command php bin/console generate:random-characters");
         }
 
@@ -97,10 +97,14 @@ class CompareSetsCommand extends Command
         return $contents;
     }
 
-    private function findAllFilesWithDataToCompare(): Finder
+    private function findAllFilesWithDataToCompare(): ?Finder
     {
         $finder = new Finder();
-        return $finder->files()->in(__DIR__ . '../../../var/tmp/');
+        try {
+            return $finder->files()->in('var/tmp/');
+        }catch (\Exception $e){
+            return null;
+        }
     }
 
     private function buildArrayWithComparedValuesToSaveCsv(array $resultCompare, array $contentsArray, array $contents): array
