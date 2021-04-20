@@ -6,4 +6,13 @@
 
 results you can find in src/export folder as csv file
 
+
+ROADMAP 
+
+I'm going to:
+1 rewrite the current service architecture to the DDD.
+2 complete unit tests
+3 dockerization of the project
+
+
 have fun :)
