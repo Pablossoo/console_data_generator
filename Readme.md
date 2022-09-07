@@ -1,18 +1,11 @@
-###Run project: 
-* 1 you have to have installed php 7.4 and composer
-* 2 Run composer install
-* 3 from main folder, first you should execute command php bin/console generate:random-characters x where X type number from range 5-1000
-* 4 now you can execute command php bin/console compare-sets
+1 you must have php 7.4 and composer installed
+2 Run the composer installation command
+3 from the root folder, first run the command php bin / console generate: random-x characters where X enter a number in the range 5-1000
+4 now you can execute the command php bin / console Compare-sets
+the results can be found in the src / export folder as a csv file
 
-results you can find in src/export folder as csv file
+ROAD MAP
 
-
-ROADMAP 
-
-I'm going to:
-1 rewrite the current service architecture to the DDD.
-2 complete unit tests
-3 dockerization of the project
-
+1 complete unit tests. 2 project completion
 
 have fun :)
